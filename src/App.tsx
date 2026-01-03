@@ -3,6 +3,8 @@ import MainLayout from "./layouts/MainLayout";
 import Login from "./pages/Login/Login";
 import UserProvider from "./Context/UserContext";
 import Home from "./pages/Home/Home";
+import { Toaster } from "react-hot-toast";
+import Exam from "./pages/Exam/Exam";
 
 const App = () => {
 	const routes = createBrowserRouter([
@@ -16,6 +18,10 @@ const App = () => {
 			{
 				path: "/home",
 				element: <Home />
+			},
+			{
+				path: '/quiz/:name/:id',
+				element: <Exam />
 			}
 			]
 
@@ -24,6 +30,7 @@ const App = () => {
 	return (
 		<UserProvider>
 			<RouterProvider router={routes} />
+			<Toaster />
 		</UserProvider>
 	);
 };

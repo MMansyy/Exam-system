@@ -21,6 +21,8 @@ import { Controller, useForm } from "react-hook-form";
 import { UserContext } from "@/Context/UserContext"
 import { useContext } from "react"
 import { useNavigate } from "react-router-dom"
+import axiosInstance from "@/lib/axios.global"
+import toast from "react-hot-toast"
 
 
 
@@ -35,16 +37,32 @@ export function LoginForm({
   const navigate = useNavigate();
 
   const onSubmit = (data: any) => {
-    dispatch({
-      type: "SET_USER",
-      payload: {
-        id: data.id,
-        role: data.role,
-      },
-    });
-    navigate("/home");
-    console.log("User logged in:", user);
-  }
+    let toastId = toast.loading("Logging in...");
+    axiosInstance.post('/login/check', data)
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch({
+            type: "SET_USER",
+            payload: {
+              id: res.data?.id,
+              role: res.data?.role,
+              name: res.data?.name
+            },
+          });
+          toast.success("Login successful!", { id: toastId });
+          localStorage.setItem("user", JSON.stringify({
+            id: res.data?.id,
+            role: res.data?.role,
+            name: res.data?.name
+          }));
+          setTimeout(() => {
+            navigate("/home");
+          }, 1000);
+        }
+      }).catch((err) => {
+        toast.error("Login failed. Please check your ID and role.", { id: toastId });
+      });
+  };
 
 
 

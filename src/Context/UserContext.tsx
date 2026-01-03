@@ -3,6 +3,7 @@ import { createContext, useReducer, type ReactNode } from "react"
 type UserState = {
     id: string
     role: string
+    name?: string
 }
 
 type UserAction = {
@@ -23,6 +24,7 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
             return {
                 id: action.payload.id,
                 role: action.payload.role,
+                name: action.payload.name
             }
         default:
             return state
@@ -33,11 +35,14 @@ type Props = {
     children: ReactNode
 }
 
+const storedUser = localStorage.getItem("user");
+const initialUserState: UserState = storedUser
+    ? JSON.parse(storedUser)
+    : { id: "", role: "", name: "" };
+
+
 export default function UserProvider({ children }: Props) {
-    const [user, dispatch] = useReducer(userReducer, {
-        id: "",
-        role: "",
-    })
+    const [user, dispatch] = useReducer(userReducer, initialUserState)
 
     return (
         <UserContext.Provider value={{ user, dispatch }}>

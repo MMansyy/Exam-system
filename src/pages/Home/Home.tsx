@@ -1,77 +1,35 @@
 import QuizCard from '@/components/QuizCard/QuizCard';
-import { useState } from 'react';
+import { UserContext } from '@/Context/UserContext';
+import axiosInstance from '@/lib/axios.global';
+import { useContext, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 interface Quiz {
-    quizId: number;
-    quizTitle: string;
-    quizDesc: string;
-    quizImg: string;
-    titleSearch: string;
+    crs_ID: number;
+    crs_Name: string;
 }
-const quizzes: Quiz[] = [
-    {
-        quizId: 23,
-        quizTitle: "The Ultimate History Quiz",
-        quizDesc: "Test your knowledge of world history.",
-        quizImg: "images/History.png",
-        titleSearch: "History",
-    },
-    {
-        quizId: 17,
-        quizTitle: "The Ultimate Science Quiz",
-        quizDesc: "Test your knowledge of science.",
-        quizImg: "images/Science.png",
-        titleSearch: "Science",
-    },
-    {
-        quizId: 22,
-        quizTitle: "The Ultimate Geography Quiz",
-        quizDesc: "Test your knowledge of geography.",
-        quizImg: "images/Geography.png",
-        titleSearch: "Geography",
-    },
-    {
-        quizId: 19,
-        quizTitle: "The Ultimate Math Quiz",
-        quizDesc: "Test your knowledge of math.",
-        quizImg: "images/Math.png",
-        titleSearch: "Math",
-    },
-    {
-        quizId: 20,
-        quizTitle: "The Ultimate Mythology Quiz",
-        quizDesc: "Test your knowledge of mythology.",
-        quizImg: "images/Literature.png",
-        titleSearch: "Mythology",
-    },
-    {
-        quizId: 25,
-        quizTitle: "The Ultimate Art Quiz",
-        quizDesc: "Test your knowledge of art.",
-        quizImg: "images/Art.png",
-        titleSearch: "Art",
-    },
-    {
-        quizId: 21,
-        quizTitle: "The Ultimate Sport Quiz",
-        quizDesc: "Test your knowledge of sport.",
-        quizImg: "images/Geography.png",
-        titleSearch: "Sport",
-    },
-    {
-        quizId: 15,
-        quizTitle: "The Ultimate Video Games Quiz",
-        quizDesc: "Test your knowledge of video games.",
-        quizImg: "images/Science.png",
-        titleSearch: "Video Games",
-    },
-];
+
 
 export default function Home() {
 
-    const [filterdQuizes, setfilterdQuizes] = useState<Quiz[]>([...quizzes])
+    const [quizzes, setQuizzes] = useState<Quiz[]>()
+    const [filterdQuizes, setfilterdQuizes] = useState<Quiz[]>([...quizzes || []])
+    const { user } = useContext(UserContext);
 
-    // const featuredQuizzes = [...quizzes];
+    console.log(user);
 
+
+
+    useEffect(() => {
+        if (user && user.id) {
+            axiosInstance.get(`/student/${user.id}/courses`)
+                .then((res) => {
+                    setQuizzes(res.data);
+                    setfilterdQuizes(res.data);
+                }).catch((err) => {
+                    toast.error("Error fetching quizzes:", err);
+                });
+        }
+    }, [user?.id]);
 
 
     return (
@@ -84,15 +42,12 @@ export default function Home() {
                         setfilterdQuizes([...quizzes]);
                         return;
                     }
-
-                    const filtered = quizzes.filter(quiz =>
-                        quiz.quizTitle.toLowerCase().includes(value)
+                    const filtered = quizzes?.filter(quiz =>
+                        quiz.crs_Name.toLowerCase().includes(value)
                     );
-
                     setfilterdQuizes(filtered);
                 }} type='text' placeholder='Search quizzes' className='mt-6 p-2 px-4 border border-gray-300 bg-gray-100 rounded-lg w-full' />
             </div>
-            {/* {searchTerm === '' && */}
             <div className=''>
                 <h3 className='text-2xl font-bold my-7'>
                     Featured
@@ -103,7 +58,6 @@ export default function Home() {
                     ))}
                 </div>
             </div>
-            {/* } */}
         </section>
     )
 }

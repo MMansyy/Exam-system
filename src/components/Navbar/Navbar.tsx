@@ -19,7 +19,7 @@ export default function Navbar() {
         <nav className="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md transition-all duration-300">
             <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between p-4">
                 {/* Logo Section */}
-                <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+                <Link to="/home" className="flex items-center space-x-3 rtl:space-x-reverse">
                     <span className="self-center whitespace-nowrap text-3xl font-bold text-gray-900">
                         Quizee
                     </span>
