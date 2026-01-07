@@ -52,14 +52,21 @@ const Exam: React.FC = () => {
         }));
 
         const submission: ExamSubmission = {
-            ex_ID: parseInt(examID || '0'),
+            ex_ID: examID || 0,
             st_ID: user?.id,
             answers: answers
         };
 
         try {
-            const response = await axiosInstance.post('/ExamSubEP/submit', submission);
-            console.log('Submission successful:', response.data);
+            axiosInstance.post('/ExamSubEP/submit', submission)
+                .then((response) => {
+                    console.log('Submission successful:', response.data);
+                    console.log(examID);
+                    axiosInstance.post(`/ExamCorrectionEP/correct?exId=${examID}`).then((correctionResponse) => {
+                        console.log('Correction successful:', correctionResponse.data);
+                        alert(`Your exam has been submitted and corrected. Your score: ${correctionResponse.data?.totalDegree}`);
+                    })
+                })
         } catch (err: any) {
             console.log(submission);
             console.error('Submission failed:', err);
@@ -80,7 +87,7 @@ const Exam: React.FC = () => {
                 setIsLoading(true);
                 console.log("Attempting to fetch with ID:", examName);
                 const response = await axiosInstance.post(
-                    `/Exam/generate?courseName=${encodeURIComponent(examName || '')}&mcqNum=5&tfNum=5`
+                    `/Exam/generate?courseName=${encodeURIComponent(examName || '')}&mcqNum=6&tfNum=4`
                 );
 
                 console.log("Full API Response:", response);
