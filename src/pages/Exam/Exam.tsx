@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import axiosInstance from '@/lib/axios.global';
 import { UserContext } from '@/Context/UserContext';
+import toast from 'react-hot-toast';
 
 
 interface Answer {
@@ -58,19 +59,22 @@ const Exam: React.FC = () => {
         };
 
         try {
+            const toastId = toast.loading("Submitting exam...");
             axiosInstance.post('/ExamSubEP/submit', submission)
                 .then((response) => {
                     console.log('Submission successful:', response.data);
                     console.log(examID);
                     axiosInstance.post(`/ExamCorrectionEP/correct?exId=${examID}`).then((correctionResponse) => {
                         console.log('Correction successful:', correctionResponse.data);
-                        alert(`Your exam has been submitted and corrected. Your score: ${correctionResponse.data?.totalDegree}`);
+                        toast.success("Exam submitted and corrected successfully!", { id: toastId, duration: 3000 });
+                        navigate('/results')
                     })
                 })
         } catch (err: any) {
             console.log(submission);
             console.error('Submission failed:', err);
             setError('Failed to submit exam. Please try again.');
+            toast.error("Failed to submit exam. Please try again.", { id: toastId });
             return;
         }
         console.log('Submitting:', submission);

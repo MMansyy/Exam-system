@@ -12,7 +12,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -33,11 +32,11 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
 
   const { register, handleSubmit, control } = useForm();
-  const { user, dispatch } = useContext(UserContext);
+  const { dispatch } = useContext(UserContext);
   const navigate = useNavigate();
 
   const onSubmit = (data: any) => {
-    let toastId = toast.loading("Logging in...");
+    const toastId = toast.loading("Logging in...");
     axiosInstance.post('/login/check', data)
       .then((res) => {
         if (res.status === 200) {
@@ -63,6 +62,8 @@ export function LoginForm({
         toast.error("Login failed. Please check your ID and role.", { id: toastId });
       });
   };
+
+
 
 
 

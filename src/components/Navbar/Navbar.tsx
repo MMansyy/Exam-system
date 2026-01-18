@@ -9,10 +9,8 @@ export default function Navbar() {
     const toggleMenu = () => setIsOpen(!isOpen);
 
     const navLinks = [
-        { name: "Home", path: "/" },
-        { name: "About", path: "/about" },
-        { name: "Services", path: "/services" },
-        { name: "Pricing", path: "/pricing" },
+        { name: "Home", path: "/home" },
+        { name: "Results", path: "/results" },
     ];
 
     return (
@@ -57,10 +55,10 @@ export default function Navbar() {
                         {/* Special CTA Button for the last item */}
                         <li>
                             <Link
-                                to="/login"
+                                to="/"
                                 className="block rounded-full bg-black px-5 py-2 text-center text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 md:inline-block"
                             >
-                                Contact Us
+                                Logout
                             </Link>
                         </li>
                     </ul>
@@ -76,8 +74,8 @@ export default function Navbar() {
                                 to={link.path}
                                 onClick={() => setIsOpen(false)}
                                 className={`block rounded py-2 px-3 text-base ${location.pathname === link.path
-                                        ? "bg-gray-600 text-white"
-                                        : "text-gray-700 hover:bg-gray-100"
+                                    ? "bg-gray-600 text-white"
+                                    : "text-gray-700 hover:bg-gray-100"
                                     }`}
                             >
                                 {link.name}
@@ -86,11 +84,11 @@ export default function Navbar() {
                     ))}
                     <li>
                         <Link
-                            to="/contact"
+                            to="/"
                             onClick={() => setIsOpen(false)}
                             className="block rounded py-2 px-3 text-base font-medium text-gray-600 hover:bg-gray-100"
                         >
-                            Contact Us
+                            Logout
                         </Link>
                     </li>
                 </ul>
@@ -104,8 +102,8 @@ function NavLink({ to, children, isActive }: { to: string; children: React.React
         <Link
             to={to}
             className={`block rounded py-2 px-3 transition-colors md:bg-transparent md:p-0 ${isActive
-                    ? "text-gray-700 font-semibold md:text-gray-600"
-                    : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-gray-700"
+                ? "text-gray-700 font-semibold md:text-gray-600"
+                : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-gray-700"
                 }`}
             aria-current={isActive ? "page" : undefined}
         >
