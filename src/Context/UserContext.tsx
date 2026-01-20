@@ -7,7 +7,7 @@ type UserState = {
 }
 
 type UserAction = {
-    type: "SET_USER"
+    type: "SET_USER" | 'REMOVE_USER'
     payload: UserState
 }
 
@@ -26,6 +26,8 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
                 role: action.payload.role,
                 name: action.payload.name
             }
+        case "REMOVE_USER":
+            return { id: "", role: "", name: "" }
         default:
             return state
     }

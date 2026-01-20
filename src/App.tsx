@@ -6,6 +6,7 @@ import Home from "./pages/Home/Home";
 import { Toaster } from "react-hot-toast";
 import Exam from "./pages/Exam/Exam";
 import Results from "./pages/Results/Results";
+import Dashbord from "./pages/Dashbord/Dashbord";
 
 const App = () => {
 	const routes = createBrowserRouter([
@@ -27,6 +28,10 @@ const App = () => {
 			{
 				path: '/results',
 				element: <Results />
+			},
+			{
+				path: '/dashboard',
+				element: <Dashbord />
 			}
 			]
 

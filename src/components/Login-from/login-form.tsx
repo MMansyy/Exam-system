@@ -55,10 +55,14 @@ export function LoginForm({
             name: res.data?.name
           }));
           setTimeout(() => {
+            if (data.role === "instructor") {
+              navigate("/dashboard");
+              return;
+            }
             navigate("/home");
           }, 1000);
         }
-      }).catch((err) => {
+      }).catch(() => {
         toast.error("Login failed. Please check your ID and role.", { id: toastId });
       });
   };

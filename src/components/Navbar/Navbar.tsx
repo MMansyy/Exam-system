@@ -1,16 +1,23 @@
-import { useState } from "react";
+import { UserContext } from "@/Context/UserContext";
+import { useContext, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const { user, dispatch } = useContext(UserContext);
     const location = useLocation();
 
+    const handleLogout = () => {
+        localStorage.removeItem("user");
+        dispatch({ type: "REMOVE_USER", payload: { id: "", role: "", name: "" } });
+    };
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
     const navLinks = [
         { name: "Home", path: "/home" },
         { name: "Results", path: "/results" },
+        { name: "Dashboard", path: "/dashboard" },
     ];
 
     return (
@@ -40,59 +47,62 @@ export default function Navbar() {
                 </button>
 
                 {/* Desktop Menu */}
-                <div className="hidden w-full md:block md:w-auto" id="navbar-default">
-                    <ul className="mt-4 flex flex-col rounded-lg border border-gray-100 bg-gray-50 p-4 font-medium md:mt-0 md:flex-row md:items-center md:space-x-8 md:border-0 md:bg-transparent md:p-0 rtl:space-x-reverse">
+                {user.role != '' &&
+                    <div className="hidden w-full md:block md:w-auto" id="navbar-default">
+                        <ul className="mt-4 flex flex-col rounded-lg border border-gray-100 bg-gray-50 p-4 font-medium md:mt-0 md:flex-row md:items-center md:space-x-8 md:border-0 md:bg-transparent md:p-0 rtl:space-x-reverse">
+                            {navLinks.map((link) => (
+                                <li key={link.name}>
+                                    <NavLink
+                                        to={link.path}
+                                        isActive={location.pathname === link.path}
+                                    >
+                                        {link.name}
+                                    </NavLink>
+                                </li>
+                            ))}
+                            {/* Special CTA Button for the last item */}
+                            <li>
+                                <Link
+                                    to="/"
+                                    onClick={handleLogout}
+                                    className="block rounded-full bg-black px-5 py-2 text-center text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 md:inline-block"
+                                >
+                                    Logout
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>}
+            </div>
+
+            {/* Mobile Dropdown (Animated) */}
+            {user.role != '' &&
+                <div className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                    <ul className="flex flex-col space-y-2 border-t border-gray-100 bg-gray-50 p-4">
                         {navLinks.map((link) => (
                             <li key={link.name}>
-                                <NavLink
+                                <Link
                                     to={link.path}
-                                    isActive={location.pathname === link.path}
+                                    onClick={() => setIsOpen(false)}
+                                    className={`block rounded py-2 px-3 text-base ${location.pathname === link.path
+                                        ? "bg-gray-600 text-white"
+                                        : "text-gray-700 hover:bg-gray-100"
+                                        }`}
                                 >
                                     {link.name}
-                                </NavLink>
+                                </Link>
                             </li>
                         ))}
-                        {/* Special CTA Button for the last item */}
                         <li>
                             <Link
                                 to="/"
-                                className="block rounded-full bg-black px-5 py-2 text-center text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 md:inline-block"
+                                onClick={() => setIsOpen(false)}
+                                className="block rounded py-2 px-3 text-base font-medium text-gray-600 hover:bg-gray-100"
                             >
                                 Logout
                             </Link>
                         </li>
                     </ul>
-                </div>
-            </div>
-
-            {/* Mobile Dropdown (Animated) */}
-            <div className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-                <ul className="flex flex-col space-y-2 border-t border-gray-100 bg-gray-50 p-4">
-                    {navLinks.map((link) => (
-                        <li key={link.name}>
-                            <Link
-                                to={link.path}
-                                onClick={() => setIsOpen(false)}
-                                className={`block rounded py-2 px-3 text-base ${location.pathname === link.path
-                                    ? "bg-gray-600 text-white"
-                                    : "text-gray-700 hover:bg-gray-100"
-                                    }`}
-                            >
-                                {link.name}
-                            </Link>
-                        </li>
-                    ))}
-                    <li>
-                        <Link
-                            to="/"
-                            onClick={() => setIsOpen(false)}
-                            className="block rounded py-2 px-3 text-base font-medium text-gray-600 hover:bg-gray-100"
-                        >
-                            Logout
-                        </Link>
-                    </li>
-                </ul>
-            </div>
+                </div>}
         </nav>
     );
 }
